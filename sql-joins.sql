@@ -74,8 +74,10 @@ create table Sessions
 (
 	session_id int primary key identity,
 	session_movie int references Movies(movie_id),
-	hall_id int references Halls(hall_id)
+	hall_id int references Halls(hall_id),
+	session_time date
 )
+
 
 					/*		Creating Table Tickets		*/
 
@@ -156,13 +158,67 @@ values
 (2, 6),
 (3, 7),
 (3, 8),
-(3, 9),
-(4, 10),
-(4, 11),
-(4, 12)
+(3, 9)
 
-select * from Movies
-select * from Actors
-select * from MoviesActors
+--error
 
-delete from MoviesActors
+					/*		Insert Data	MoviesGenres  	*/
+
+insert into MoviesGenres
+values
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 3),
+(2, 4),
+(2, 5),
+(2, 6),
+(3, 3),
+(3, 4),
+(3, 5),
+(3, 6)
+
+					/*		Insert Data	Sessions  	*/
+
+insert into Sessions
+values
+(1, 3, '2022-01-24'),
+(3, 2, '2022-01-23'),
+(2, 1, '2022-01-22')
+
+					/*		Insert Data	Tickets  	*/
+
+insert into Tickets
+values
+(2, 1),
+(2, 5),
+(2, 6),
+(1, 3),
+(3, 4),
+(3, 2)
+
+					/*		Tasks  	*/
+
+-- 1. View yaratmaq, hansindaki Biletler haqqinda butun melumatlari chixarmaq
+
+create view v_ticket_info as
+select C.customer_name, C.customer_surname, C.customer_phone, H.hall_name, M.movie_name, M.movie_duration, M.movie_record_date, S.session_time from Tickets T
+join Sessions S
+on T.session_id = S.session_id
+join Customers C
+on T.customer_id = C.customer_id
+join Halls H
+on S.hall_id = H.hall_id
+join Movies M
+on M.movie_id = S.session_movie
+join MoviesGenres MG
+on MG.genre_id = M.movie_id
+join MoviesActors MA
+on MA.actor_id = M.movie_id
+
+
+select * from v_ticket_info
+
+
+
